@@ -3,14 +3,17 @@ package youtube
 import (
 	"errors"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"net/url"
+	"time"
+
 	"github.com/lithdew/bytesutil"
 	"github.com/lithdew/nicehttp"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fastjson"
 	"golang.org/x/sync/errgroup"
-	"net/url"
-	"net/http"
-	"time"
 )
 
 var zeroTime time.Time
@@ -127,18 +130,18 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 	uri = append(uri, "&hl="...)
 	uri = append(uri, "en"...)
 
-// 	buf, err := c.DownloadBytesDeadline(nil, bytesutil.String(uri), deadline)
-// 	if err != nil {
-// 		return result, fmt.Errorf("failed to search for page %d of query %q: %w", page, query, err)
-// 	}
-	
+	// 	buf, err := c.DownloadBytesDeadline(nil, bytesutil.String(uri), deadline)
+	// 	if err != nil {
+	// 		return result, fmt.Errorf("failed to search for page %d of query %q: %w", page, query, err)
+	// 	}
+
 	var (
 		httpClient http.Client = http.Client{
-		// Timeout: time.Second * 2, // Timeout after 2 seconds
+			// Timeout: time.Second * 2, // Timeout after 2 seconds
 		}
 		headers map[string]string
 	)
-	
+
 	req, err := http.NewRequest("GET", bytesutil.String(uri), nil)
 	if err != nil {
 		log.Fatal(err)
@@ -146,8 +149,7 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 
 	headers["x-youtube-client-name"] = "56"
 	headers["x-youtube-client-version"] = "20200911"
-	
-	
+
 	for k, v := range headers {
 		req.Header.Add(k, v)
 	}
@@ -159,10 +161,6 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 	if err != nil {
 		log.Fatal(err)
 	}
-	
-	
-	
-	
 
 	val, err := fastjson.ParseBytes(resbody)
 	if err != nil {
