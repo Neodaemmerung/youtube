@@ -138,7 +138,7 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 		httpClient http.Client = http.Client{
 			// Timeout: time.Second * 2, // Timeout after 2 seconds
 		}
-		headers map[string]string
+		headers = make(map[string]string)
 	)
 
 	req, err := http.NewRequest("GET", bytesutil.String(uri), nil)
