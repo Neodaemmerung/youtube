@@ -3,7 +3,7 @@ package youtube
 import (
 	"fmt"
 	"github.com/lithdew/bytesutil"
-	"github.com/lithdew/youtube/sig"
+	"github.com/neodaemmerung/youtube/sig"
 	"github.com/valyala/fasthttp"
 	"github.com/valyala/fastjson"
 )
