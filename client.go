@@ -3,8 +3,7 @@ package youtube
 import (
 	"errors"
 	"fmt"
-	"io"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
@@ -144,7 +143,7 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 
 	req, err := http.NewRequest("GET", bytesutil.String(uri), nil)
 	if err != nil {
-		log.Fatal(err)
+		return SearchResult{}, err
 	}
 
 	headers["x-youtube-client-name"] = "56"
@@ -155,11 +154,11 @@ func (c *Client) SearchDeadline(query string, page uint, deadline time.Time) (Se
 	}
 	res, err := httpClient.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		return SearchResult{}, err
 	}
-	resbody, err := io.ReadAll(res.Body)
+	resbody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return SearchResult{}, err
 	}
 
 	val, err := fastjson.ParseBytes(resbody)
